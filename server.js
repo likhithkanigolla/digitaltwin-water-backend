@@ -1,12 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 
 const app = express();
 const PORT = 2345;
-
-app.use(express.json());
-app.use(cors());
 
 let waterUnitsAtA = Array(10).fill(1);
 let waterUnitsAtB = [];
