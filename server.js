@@ -23,7 +23,11 @@ app.post('/calculateAmount', (req, res) => {
   waterUnitsAtA = unitsAtA;
   waterUnitsAtB = Array(10 - unitsAtA.length).fill(1); // Fill water units at point B accordingly
 
-  res.status(200).json({ waterUnitsAtA, waterUnitsAtB });
+  // Calculate the total amount at A and B
+  const calculatedAmountAtA = waterUnitsAtA.length;
+  const calculatedAmountAtB = waterUnitsAtB.length;
+
+  res.status(200).json({ waterUnitsAtA, waterUnitsAtB, calculatedAmountAtA, calculatedAmountAtB });
 });
 
 app.listen(PORT, () => {
