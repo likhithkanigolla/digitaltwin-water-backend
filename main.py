@@ -10,11 +10,11 @@ from sensor import WaterFlowSensorDigitalTwin
 
 
 # _url= "http://onem2m.iiit.ac.in:443/~/in-cse/in-name/"
-_url= "http://localhost:2000/~/in-cse/in-name/"
-# _url= "http://192.168.0.109:8200/~/in-cse/in-name/"
+# _url= "http://localhost:2000/~/in-cse/in-name/"
+_url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
-# _ae = "AE-DT/"
-_ae = "AE-WM/WM-WF/"
+_ae = "AE-DT/"
+# _ae = "AE-WM/WM-WF/"
 
 _node1 = "Node-1"
 _node2 = "Node-2"
