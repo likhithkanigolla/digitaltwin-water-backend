@@ -27,12 +27,12 @@
 # # Example usage:
 # xml_data = """<obj><str name="Node ID" val="WM-WF-PH02-70"/>
 # <str name="Node Location" val="{'Latitude': 17.446267, 'Longitude': 78.349436}"/>
-# <str name="Device Model" val="{'Controller': 'Raspberry Pi 3B+, id=1.0', 'Device': 'Smart Retrofit Water Meter node with Flow Rate and Total Flow', 'Sensors': ['(Timestamp)', '(Flowrate = Smart Water Meter - Retrofit, id=1.0)', '(Total Flow = Smart Water Meter - Retrofit, id=1.0)']}"/>
+# <str name="Device Model" val="{'Controller': 'Raspberry Pi 3B+, id=1.0', 'Device': 'Smart Retrofit Water Meter node with Flow Rate and Total Flow', 'Sensors': ['(temperature)', '(u_tds = Smart Water Meter - Retrofit, id=1.0)', '(Total Flow = Smart Water Meter - Retrofit, id=1.0)']}"/>
 # <str name="Version History" val="[{'ver': 'V7.0.0', 'dt_start': '14-11-2021 00-00-00', 'dt_end': '31-12-9999 23-59-59'}]"/>
-# <str name="Data String Parameters" val="['Timestamp', 'Flowrate', 'Total Flow']"/>
+# <str name="Data String Parameters" val="['temperature', 'u_tds', 'Total Flow']"/>
 # <str name="Parameters Description" val="Data Description, [datatype], [Units], [Resolution], [Accuracy]"/>
-# <str name="Timestamp" val="The number of seconds that have elapsed since Thursday, 1970 Jan 1 00:00:00 UTC, [int], [s], [60 s], [n/a]"/>
-# <str name="Flowrate" val="The instantaneous value of Flow rate, [float], [Kl/min], [0.1 Kl/min], [n/a]"/>
+# <str name="temperature" val="The number of seconds that have elapsed since Thursday, 1970 Jan 1 00:00:00 UTC, [int], [s], [60 s], [n/a]"/>
+# <str name="u_tds" val="The instantaneous value of Flow rate, [float], [Kl/min], [0.1 Kl/min], [n/a]"/>
 # <str name="Total Flow" val="The instantaneous value of Total flow, [float], [Kl], [0.1 Kl], [n/a]"/>
 # </obj>"""
 
@@ -78,12 +78,12 @@ def parse_data_to_json(xml_data):
 # Example usage:
 xml_data = """<obj><str name="Node ID" val="WM-WF-PH02-70"/>
 <str name="Node Location" val="{'Latitude': 17.446267, 'Longitude': 78.349436}"/>
-<str name="Device Model" val="{'Controller': 'Raspberry Pi 3B+, id=1.0', 'Device': 'Smart Retrofit Water Meter node with Flow Rate and Total Flow', 'Sensors': ['(Timestamp)', '(Flowrate = Smart Water Meter - Retrofit, id=1.0)', '(Total Flow = Smart Water Meter - Retrofit, id=1.0)']}"/>
+<str name="Device Model" val="{'Controller': 'Raspberry Pi 3B+, id=1.0', 'Device': 'Smart Retrofit Water Meter node with Flow Rate and Total Flow', 'Sensors': ['(temperature)', '(u_tds = Smart Water Meter - Retrofit, id=1.0)', '(Total Flow = Smart Water Meter - Retrofit, id=1.0)']}"/>
 <str name="Version History" val="[{'ver': 'V7.0.0', 'dt_start': '14-11-2021 00-00-00', 'dt_end': '31-12-9999 23-59-59'}]"/>
-<str name="Data String Parameters" val="['Timestamp', 'Flowrate', 'Total Flow']"/>
+<str name="Data String Parameters" val="['temperature', 'u_tds', 'Total Flow']"/>
 <str name="Parameters Description" val="Data Description, [datatype], [Units], [Resolution], [Accuracy]"/>
-<str name="Timestamp" val="The number of seconds that have elapsed since Thursday, 1970 Jan 1 00:00:00 UTC, [int], [s], [60 s], [n/a]"/>
-<str name="Flowrate" val="The instantaneous value of Flow rate, [float], [Kl/min], [0.1 Kl/min], [n/a]"/>
+<str name="temperature" val="The number of seconds that have elapsed since Thursday, 1970 Jan 1 00:00:00 UTC, [int], [s], [60 s], [n/a]"/>
+<str name="u_tds" val="The instantaneous value of Flow rate, [float], [Kl/min], [0.1 Kl/min], [n/a]"/>
 <str name="Total Flow" val="The instantaneous value of Total flow, [float], [Kl], [0.1 Kl], [n/a]"/>
 </obj>"""
 

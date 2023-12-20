@@ -11,7 +11,9 @@ from sensor import WaterFlowSensorDigitalTwin
 
 # _url= "http://onem2m.iiit.ac.in:443/~/in-cse/in-name/"
 _url= "http://localhost:2000/~/in-cse/in-name/"
+# _url= "http://192.168.0.109:8200/~/in-cse/in-name/"
 
+# _ae = "AE-DT/"
 _ae = "AE-WM/WM-WF/"
 
 _node1 = "Node-1"
@@ -64,9 +66,10 @@ def desc_parser(xml_data):
             selected_data[name] = val
         
         elif name == "Data String Parameters":
-            # Parse the Data String Parameters value as a list and exclude "Timestamp"
+            # Parse the Data String Parameters value as a list and exclude "timestamp"
             parameters_list = eval(val)  # Note: Be cautious when using eval in production code
-            filtered_parameters = [param for param in parameters_list if param != "Timestamp"]
+            filtered_parameters = [param for param in parameters_list if param != "timestamp"]
+            print(filtered_parameters)
             selected_data[name] = filtered_parameters
     
     # Convert the selected data dictionary to JSON format
@@ -89,7 +92,8 @@ def get_data(name):
     _URL = _url + _ae + name + "/Data/la"
     response = requests.request("GET",_URL,headers=headers,data=payload)
     data = json.loads(response.text)
-    data = eval(data["m2m:cin"]["con"])[1:]
+    # data = eval(data["m2m:cin"]["con"])[1:]
+    data = eval(data["m2m:cin"]["con"])
     print("Sensor Data:")
     print(data)
     # data = data
@@ -109,33 +113,36 @@ def update_data():
             # Update the digital twins with sensor data
             if _node1 in main_data and len(main_data[_node1]) > 2:
                 sensor_node1.update(
-                    timestamp=main_data[_node1][0],  # Assuming the timestamp is at index 0
-                    flowrate=main_data[_node1][1],   # Assuming the flowrate is at index 1
-                    total_flow=main_data[_node1][2]  # Assuming the total flow is at index 2
+                    temperature=main_data[_node1][0],  # Assuming the temperature is at index 0
+                    u_tds=main_data[_node1][1],   # Assuming the u_tds is at index 1
+                    c_tds=main_data[_node1][2],  # Assuming the total flow is at index 2
+                    v_tds=main_data[_node1][3]  # Assuming the total flow is at index 2
                 )
             else:
                 # Handle missing or incomplete data for sensor_node1
-                sensor_node1.update(timestamp=None, flowrate=None, total_flow=None)
+                sensor_node1.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
 
             if _node2 in main_data and len(main_data[_node2]) > 2:
                 sensor_node2.update(
-                    timestamp=main_data[_node2][0],  # Assuming the timestamp is at index 0
-                    flowrate=main_data[_node2][1],   # Assuming the flowrate is at index 1
-                    total_flow=main_data[_node2][2]  # Assuming the total flow is at index 2
+                    temperature=main_data[_node2][0],  # Assuming the temperature is at index 0
+                    u_tds=main_data[_node2][1],   # Assuming the u_tds is at index 1
+                    c_tds=main_data[_node2][2],  # Assuming the total flow is at index 2
+                    v_tds=main_data[_node2][3]  # Assuming the total flow is at index 2
                 )
             else:
                 # Handle missing or incomplete data for sensor_node2
-                sensor_node2.update(timestamp=None, flowrate=None, total_flow=None)
+                sensor_node2.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
                 
             if _node3 in main_data and len(main_data[_node3]) > 2:
                 sensor_node3.update(
-                    timestamp=main_data[_node3][0],  # Assuming the timestamp is at index 0
-                    flowrate=main_data[_node3][1],   # Assuming the flowrate is at index 1
-                    total_flow=main_data[_node3][2]  # Assuming the total flow is at index 2
+                    temperature=main_data[_node3][0],  # Assuming the temperature is at index 0
+                    u_tds=main_data[_node3][1],   # Assuming the u_tds is at index 1
+                    c_tds=main_data[_node3][2],  # Assuming the total flow is at index 2
+                    v_tds=main_data[_node3][3]  # Assuming the total flow is at index 2
                 )
             else:
                 # Handle missing or incomplete data for sensor_node3
-                sensor_node3.update(timestamp=None, flowrate=None, total_flow=None)
+                sensor_node3.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
 
             time.sleep(20)
         except Exception as e:
@@ -166,7 +173,7 @@ def r_desc(name):
 
 @app.get('/data/{name}')
 def r_data(name):
-    print(name)
+    print("Node Name:",name)
     return main_data[name]
 
 
