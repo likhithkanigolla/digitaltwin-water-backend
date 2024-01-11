@@ -114,6 +114,19 @@ def get_data(name):
     # data = data
     main_data[name] = data
 
+def post_to_onem2m(data):
+    url = "http://10.3.1.117:8200/~/in-cse/in-name/AE-DT/Node-1/Actuation"
+
+    payload = "{\n    \"m2m:cin\":{\"con\":\"[0, 0]\"}}"
+    headers = {
+    'X-M2M-Origin': 'admin:admin',
+    'Content-Type': 'application/json;ty=4'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
+
 def update_data():
     while True:
         try:
@@ -125,6 +138,7 @@ def update_data():
             get_data(_node2)
             get_data(_node3)
 
+            post_to_onem2m(0)
             # Update the digital twins with sensor data
             if _node1 in main_data and len(main_data[_node1]) > 2:
                 sensor_node1.update(
