@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from sensor import WaterFlowSensorDigitalTwin
 
+from fastapi.responses import JSONResponse
+import re
 
 # _url= "http://onem2m.iiit.ac.in:443/~/in-cse/in-name/"
 # _url= "http://localhost:2000/~/in-cse/in-name/"
@@ -82,10 +84,23 @@ def get_desc(name):
     response = requests.request("GET",_URL,headers=headers,data=payload)
     data = json.loads(response.text)
     # data = desc_parser(data["m2m:cin"]["con"])
+   
     print("Descriptor Data:")
     data = data["m2m:cin"]["con"]
     print(data)
     # data = data
+    match = re.search(r'Node Location: \[([\d., -]+)\]', data)
+    if match:
+        node_location = [float(coord) for coord in match.group(1).split(',')]
+        print("Node Location:", node_location)
+    else:
+        print("Node location not found in the input string.")
+    
+    global val 
+    val = {}
+    val["Latitude"] = node_location[0]
+    val["Longitude"] = node_location[1]
+    print("val = ", val)
     main_desc[name] = data
 
 def get_data(name):
@@ -165,6 +180,11 @@ app.add_middleware(
 # get_desc(url2)
 
 # get_desc(url1)
+
+@app.post("/real-time-location")
+async def get_real_time_location():
+    data = {"latitude": val["Latitude"], "longitude": val["Longitude"]}
+    return JSONResponse(content=data)
 
 @app.get('/desc/{name}')
 def r_desc(name):
