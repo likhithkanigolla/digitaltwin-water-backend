@@ -1,3 +1,4 @@
+import asyncio
 import threading
 import time
 import requests
@@ -7,8 +8,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware 
 
 from sensor import WaterFlowSensorDigitalTwin
+from typing import List
 
+# from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
+
 import re
 
 # _url= "http://onem2m.iiit.ac.in:443/~/in-cse/in-name/"
@@ -16,11 +20,8 @@ import re
 _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
-<<<<<<< Updated upstream
-=======
 ack = []
 nodeVal = 0
->>>>>>> Stashed changes
 # _ae = "AE-WM/WM-WF/"
 
 _node1 = "Node-1"
@@ -28,6 +29,7 @@ _node2 = "Node-2"
 _node3 = "Node-3"
 
 _desc = "/Descriptor/la/"
+_ack = "/Acknowledgment/la/"
 main_data = {}
 main_desc = {}
 
@@ -71,7 +73,9 @@ def desc_parser(xml_data):
                 val = [location_dict['Latitude'], location_dict['Longitude']]
             
             selected_data[name] = val
-        
+
+            print("------------------------------------Val = ", val)
+
         elif name == "Data String Parameters":
             # Parse the Data String Parameters value as a list and exclude "timestamp"
             parameters_list = eval(val)  # Note: Be cautious when using eval in production code
@@ -119,18 +123,7 @@ def get_data(name):
     # data = data
     main_data[name] = data
 
-def post_to_onem2m(data):
-    url = "http://10.3.1.117:8200/~/in-cse/in-name/AE-DT/Node-1/Actuation"
 
-    payload = "{\n    \"m2m:cin\":{\"con\":\"[0, 0]\"}}"
-    headers = {
-    'X-M2M-Origin': 'admin:admin',
-    'Content-Type': 'application/json;ty=4'
-    }
-
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    print(response.text)
 
 def update_data():
     while True:
@@ -143,7 +136,6 @@ def update_data():
             get_data(_node2)
             get_data(_node3)
 
-            post_to_onem2m(0)
             # Update the digital twins with sensor data
             if _node1 in main_data and len(main_data[_node1]) > 2:
                 sensor_node1.update(
@@ -181,10 +173,45 @@ def update_data():
             time.sleep(20)
         except Exception as e:
             print(f"Error in update_data: {e}")
+
+
+def get_ack(name):
+
+
+    _URL = _url + _ae + name + _ack 
+    response = requests.request("GET",_URL,headers=headers,data=payload)
+    ack = json.loads(response.text)
+    
+    print("Acknowledgment Data:")
+    ack = ack["m2m:cin"]["con"]
+    print(ack)
+
+    # main_desc[name] = ack
+
+
+def post_to_onem2m(data):
+    url = "http://10.3.1.117:8200/~/in-cse/in-name/AE-DT/Node-1/Actuation"
+    
+    data = str(data)
+    data_json = json.dumps(data)
+    payload = json.dumps({
+        "m2m:cin": {
+            "con": data
+        }
+    })
+    headers = {
+    'X-M2M-Origin': 'admin:admin',
+    'Content-Type': 'application/json;ty=4'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
         
 thread_data = threading.Thread(target=update_data)
 thread_data.daemon = True
 thread_data.start()
+
 
 app = FastAPI()
 app.add_middleware(
@@ -195,14 +222,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# get_desc(url1)
-# get_desc(url2)
-
-# get_desc(url1)
-
+    
 @app.post("/real-time-location")
 async def get_real_time_location():
     data = {"latitude": val["Latitude"], "longitude": val["Longitude"]}
+    return JSONResponse(content=data)
+
+@app.post("/acknowledgment")
+async def get_acknowledgment():
+    data = {"ack": ack}
     return JSONResponse(content=data)
 
 @app.get('/desc/{name}')
@@ -216,8 +244,6 @@ def r_data(name):
     return main_data[name]
 
 
-<<<<<<< Updated upstream
-=======
 @app.post("/actuation")
 async def actuation(data: dict):
     array = data.get("array")
@@ -265,8 +291,6 @@ async def get_newNode():
     data = {"nodeVal": nodeVal}
     return JSONResponse(content=data)
 
->>>>>>> Stashed changes
 if __name__=='__main__':
     import uvicorn
     uvicorn.run(app,host="0.0.0.0",port=8080)
-
