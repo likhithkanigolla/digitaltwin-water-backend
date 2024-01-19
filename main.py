@@ -22,7 +22,7 @@ _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 _ae = "AE-DT/"
 ack = []
 nodeVal = 0
-# _ae = "AE-WM/WM-WF/"
+
 
 _node1 = "Node-1"
 _node2 = "Node-2"
@@ -290,6 +290,7 @@ async def percent(data: dict):
 async def get_newNode():
     data = {"nodeVal": nodeVal}
     return JSONResponse(content=data)
+
 
 if __name__=='__main__':
     import uvicorn
