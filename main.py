@@ -21,7 +21,8 @@ _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
 ack = []
-# _ae = "AE-WM/WM-WF/"
+nodeVal = 0
+
 
 _node1 = "Node-1"
 _node2 = "Node-2"
@@ -256,7 +257,41 @@ async def actuation(data: dict):
 
     return {"message": "Array received successfully"}
 
+@app.post("/percent")
+async def percent(data: dict):
+    global nodeVal
+    array = data.get("array")
+
+    if array is None or not isinstance(array, list):
+        return {"error": "Invalid data format"}
+    
+    print("Received percent array from frontend:", array)
+    p1 = array[0]
+    p2 = array[1]
+    p3 = array[2]
+
+    var12 = 60
+    var23 = 50
+    var31 = 20
+    dist = 0
+
+    if(p1 <= 100):
+        #bw node 1 and 2
+        dist = p1
+        nodeVal = ((dist/100) * var12) + 100
+    else:
+        #bw 2 and 3
+        dist = p2
+        nodeVal = (dist/100 * var23) + 100
+
+    print(nodeVal)
+    
+@app.post("/nodeVal")
+async def get_newNode():
+    data = {"nodeVal": nodeVal}
+    return JSONResponse(content=data)
+
+
 if __name__=='__main__':
     import uvicorn
     uvicorn.run(app,host="0.0.0.0",port=8080)
-
