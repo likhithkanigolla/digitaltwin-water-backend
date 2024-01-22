@@ -270,9 +270,9 @@ async def percent(data: dict):
     p2 = array[1]
     p3 = array[2]
 
-    var12 = 60
-    var23 = 50
-    var31 = 20
+    var12 = 11.895
+    var23 = 207.523
+    var31 = 48,445.578
     dist = 0
 
     if(p1 <= 100):
