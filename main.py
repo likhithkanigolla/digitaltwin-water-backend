@@ -260,6 +260,7 @@ async def actuation(data: dict):
 @app.post("/percent")
 async def percent(data: dict):
     global nodeVal
+    global node_data
     array = data.get("array")
 
     if array is None or not isinstance(array, list):
@@ -272,23 +273,26 @@ async def percent(data: dict):
 
     var12 = 11.895
     var23 = 207.523
-    var31 = 48,445.578
+    var31 = 48445.578
     dist = 0
 
     if(p1 <= 100):
         #bw node 1 and 2
         dist = p1
-        nodeVal = ((dist/100) * var12) + 100
+        name='Node-1'
+        node_data = r_data(name)
+        nodeVal = ((dist/100) * var12) + node_data[1]
     else:
         #bw 2 and 3
         dist = p2
-        nodeVal = (dist/100 * var23) + 100
-
+        name='Node-2'
+        node_data = r_data(name)
+        nodeVal = (dist/100 * var23) + node_data[1]
     print(nodeVal)
     
 @app.post("/nodeVal")
 async def get_newNode():
-    data = {"nodeVal": nodeVal}
+    data = {"nodeVal": nodeVal, "node_data": node_data}
     return JSONResponse(content=data)
 
 
