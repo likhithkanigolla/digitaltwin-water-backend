@@ -281,7 +281,7 @@ async def percent(data: dict):
     p3 = array[2]
 
     var12 = [0.05,196.703,195.628,0.5004]
-    var23 = 207.523
+    var23 = [-0.324,-1093.86, 8455.5780, 8.58857]
     # var31 = 48445.578
     dist = 0
 
@@ -299,10 +299,10 @@ async def percent(data: dict):
         dist = p2
         name='Node-2'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var23) + node_data[0]
-        nodeVal_utds = ((dist/100) * var23) + node_data[1]
-        nodeVal_ctds = ((dist/100) * var23) + node_data[2]
-        nodeVal_vol  = ((dist/100) * var23) + node_data[3]
+        nodeVal_temp = ((dist/100) * var23[0]) + node_data[0]
+        nodeVal_utds = ((dist/100) * var23[1]) + node_data[1]
+        nodeVal_ctds = ((dist/100) * var23[2]) + node_data[2]
+        nodeVal_vol  = ((dist/100) * var23[3]) + node_data[3]
     print("Temparature: ",nodeVal_temp," Uncompensated_TDS: ",nodeVal_utds, " Compensated_TDS:", nodeVal_ctds," Voltage_TDS:", nodeVal_vol)
     
 @app.post("/nodeVal")
