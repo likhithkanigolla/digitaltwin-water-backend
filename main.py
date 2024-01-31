@@ -21,7 +21,12 @@ _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
 ack = []
-nodeVal = 0
+
+nodeVal_temp = 0
+nodeVal_utds = 0
+nodeVal_ctds = 0
+nodeVal_vol = 0
+
 
 
 _node1 = "Node-1"
@@ -259,7 +264,11 @@ async def actuation(data: dict):
 
 @app.post("/percent")
 async def percent(data: dict):
-    global nodeVal
+    global nodeVal_utds
+    global nodeVal_ctds
+    global nodeVal_temp
+    global nodeVal_vol
+    
     global node_data
     array = data.get("array")
 
@@ -273,7 +282,7 @@ async def percent(data: dict):
 
     var12 = 11.895
     var23 = 207.523
-    var31 = 48445.578
+    # var31 = 48445.578
     dist = 0
 
     if(p1 <= 100):
@@ -281,18 +290,24 @@ async def percent(data: dict):
         dist = p1
         name='Node-1'
         node_data = r_data(name)
-        nodeVal = ((dist/100) * var12) + node_data[1]
+        nodeVal_temp = ((dist/100) * var12) + node_data[0]
+        nodeVal_utds = ((dist/100) * var12) + node_data[1]
+        nodeVal_ctds = ((dist/100) * var12) + node_data[2]
+        nodeVal_vol  = ((dist/100) * var12) + node_data[3]
     else:
         #bw 2 and 3
         dist = p2
         name='Node-2'
         node_data = r_data(name)
-        nodeVal = (dist/100 * var23) + node_data[1]
-    print(nodeVal)
+        nodeVal_temp = ((dist/100) * var23) + node_data[0]
+        nodeVal_utds = ((dist/100) * var23) + node_data[1]
+        nodeVal_ctds = ((dist/100) * var23) + node_data[2]
+        nodeVal_vol  = ((dist/100) * var23) + node_data[3]
+    print("Temparature: ",nodeVal_temp," Uncompensated_TDS: ",nodeVal_utds, " Compensated_TDS:", nodeVal_ctds," Voltage_TDS:", nodeVal_vol)
     
 @app.post("/nodeVal")
 async def get_newNode():
-    data = {"nodeVal": nodeVal, "node_data": node_data}
+    data = {"nodeVal_temp":nodeVal_temp, "nodeVal_utds": nodeVal_utds,"nodeVal_ctds": nodeVal_ctds,"nodeVal_vol": nodeVal_vol, "node_data": node_data}
     return JSONResponse(content=data)
 
 
