@@ -280,7 +280,7 @@ async def percent(data: dict):
     p2 = array[1]
     p3 = array[2]
 
-    var12 = 11.895
+    var12 = [0.05,196.703,195.628,0.5004]
     var23 = 207.523
     # var31 = 48445.578
     dist = 0
@@ -290,10 +290,10 @@ async def percent(data: dict):
         dist = p1
         name='Node-1'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var12) + node_data[0]
-        nodeVal_utds = ((dist/100) * var12) + node_data[1]
-        nodeVal_ctds = ((dist/100) * var12) + node_data[2]
-        nodeVal_vol  = ((dist/100) * var12) + node_data[3]
+        nodeVal_temp = ((dist/100) * var12[0]) + node_data[0]
+        nodeVal_utds = ((dist/100) * var12[1]) + node_data[1]
+        nodeVal_ctds = ((dist/100) * var12[2]) + node_data[2]
+        nodeVal_vol  = ((dist/100) * var12[3]) + node_data[3]
     else:
         #bw 2 and 3
         dist = p2
