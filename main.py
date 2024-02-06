@@ -309,10 +309,14 @@ async def percent(data: dict, sectionNumber):
         dist = p2
         name='Node-2'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var23[0]) + node_data[0]
-        nodeVal_utds = ((dist/100) * var23[1]) + node_data[1]
-        nodeVal_ctds = ((dist/100) * var23[2]) + node_data[2]
-        nodeVal_vol  = ((dist/100) * var23[3]) + node_data[3]
+        # nodeVal_temp = ((dist/100) * var23[0]) + node_data[0]
+        # nodeVal_utds = ((dist/100) * var23[1]) + node_data[1]
+        # nodeVal_ctds = ((dist/100) * var23[2]) + node_data[2]
+        # nodeVal_vol  = ((dist/100) * var23[3]) + node_data[3]
+        nodeVal_temp = 150
+        nodeVal_utds = TempVal
+        nodeVal_ctds = 200
+        nodeVal_vol = 300
     print("Temparature: ",nodeVal_temp," Uncompensated_TDS: ",nodeVal_utds, " Compensated_TDS:", nodeVal_ctds," Voltage_TDS:", nodeVal_vol)
     print("SoilData:", soil_payload)
     
