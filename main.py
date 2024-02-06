@@ -21,6 +21,7 @@ _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
 ack = []
+soil_payload = {}
 
 nodeVal_temp = 0
 nodeVal_utds = 0
