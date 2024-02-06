@@ -263,7 +263,7 @@ async def actuation(data: dict):
     return {"message": "Array received successfully"}
 
 @app.post("/percent")
-async def percent(data: dict, sectionNumber):
+async def percent(data: dict):
     global nodeVal_utds
     global nodeVal_ctds
     global nodeVal_temp
