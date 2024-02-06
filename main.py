@@ -311,6 +311,28 @@ async def get_newNode():
     return JSONResponse(content=data)
 
 
+@app.post("/soil")
+async def receive_soil_container_count(payload: dict):
+    # Process the soil container count as needed
+    # Access the values using the keys in the payload dictionary
+    key = next(iter(payload))  # Get the first key in the dictionary
+    value = payload[key]
+    
+    print(f'Received Soil Container Count - {payload}')
+    
+    return {"message": "Soil Container Count received successfully"}
+
+@app.post("/soil")
+async def receive_soil_container_count(payload: dict):
+    # Process the soil container count as needed
+    # Access the values using the keys in the payload dictionary
+    key = next(iter(payload))  # Get the first key in the dictionary
+    value = payload[key]
+    
+    print(f'Received Soil Container Count - {payload}')
+    
+    return {"message": "Soil Container Count received successfully"}
+
 if __name__=='__main__':
     import uvicorn
     uvicorn.run(app,host="0.0.0.0",port=8080)
