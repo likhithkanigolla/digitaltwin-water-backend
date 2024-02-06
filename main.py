@@ -290,7 +290,10 @@ async def percent(data: dict):
     print(var12)
     print("Section Number From Backend : ", sectionNumber)
     if(sectionNumber==1):
-            TempVal=soil_payload[1]
+            print("inside if condition")
+            TempVal=soil_payload['1']
+            print(TempVal)
+            
 
     if(p1 <= 100):
         #bw node 1 and 2
