@@ -21,7 +21,7 @@ _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
 ack = []
-soil_payload = {}
+soil_payload = {'1':0}
 
 nodeVal_temp = 0
 nodeVal_utds = 0
@@ -292,12 +292,13 @@ async def percent(data: dict):
     print("Section Number From Backend : ", sectionNumber)
     if(sectionNumber==1):
             print("inside if condition")
-            TempVal=soil_payload['1']
-            print(TempVal)
+            TempVal = soil_payload[str(sectionNumber)]
+            # print("TempValue+1:", TempVal+1)
             
 
     if(p1 <= 100):
         #bw node 1 and 2
+        print("TempValue Inside P1 :", TempVal)
         dist = p1
         name='Node-1'
         node_data = r_data(name)
@@ -350,10 +351,9 @@ async def receive_soil_container_count(payload: dict):
     # Access the values using the keys in the payload dictionary
     key = next(iter(payload))  # Get the first key in the dictionary
     value = payload[key]
-    global soil_payload
     
     print(f'Received Soil Container Count - {payload}')
-    soil_payload = payload
+    soil_payload[key] = value
     
     return {"message": "Soil Container Count received successfully"}
 
