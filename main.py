@@ -295,7 +295,7 @@ async def percent(data: dict):
     soil1varvol= 0.204
     
     sand1varutds= 18.332
-    sand1varotds= 333.103
+    sand1varctds= 333.103
     sand1vartemp= -0.64
     sand1varvol= 0.16
     
@@ -305,7 +305,7 @@ async def percent(data: dict):
     soil2varvol= 0.095
     
     sand2varutds= 5.758
-    sand2varotds= 10.44
+    sand2varctds= 10.44
     sand2vartemp= -1.6
     sand2varvol= 0
     
@@ -315,7 +315,7 @@ async def percent(data: dict):
     soil3varvol= 0.116
     
     sand3varutds= 0.792
-    sand3varotds= 94.442
+    sand3varctds= 94.442
     sand3vartemp= 0.088
     sand3varvol= 0.083
     
@@ -325,7 +325,7 @@ async def percent(data: dict):
     soil4varvol= 0.082
     
     sand4varutds= 2.386
-    sand4varotds= 76.846
+    sand4varctds= 76.846
     sand4vartemp= 0.75
     sand4varvol= 0.152
      
@@ -368,18 +368,46 @@ async def percent(data: dict):
         selected_soil_ctds = 0
         selected_soil_temp = 0
         selected_soil_vol = 0
+        
+    if TempValSand == 1:
+        selected_sand_utds = sand1varutds
+        selected_sand_ctds = sand1varctds
+        selected_sand_temp = sand1vartemp
+        selected_sand_vol = sand1varvol
+    elif TempValSand == 2:
+        selected_sand_utds = sand2varutds
+        selected_sand_ctds = sand2varctds
+        selected_sand_temp = sand2vartemp
+        selected_sand_vol = sand2varvol 
+    elif TempValSand == 3:
+        selected_sand_utds = sand3varutds
+        selected_sand_ctds = sand3varctds
+        selected_sand_temp = sand3vartemp
+        selected_sand_vol = sand3varvol  
+    elif TempValSand == 4:
+        selected_sand_utds = sand4varutds
+        selected_sand_ctds = sand4varctds
+        selected_sand_temp = sand4vartemp
+        selected_sand_vol = sand4varvol
+    else:
+        selected_sand_utds = 0
+        selected_sand_ctds = 0
+        selected_sand_temp = 0
+        selected_sand_vol = 0
           
-    print(selected_soil_temp,selected_soil_utds,selected_soil_ctds,selected_soil_vol)
+    print("Soil Values: ",selected_soil_temp,selected_soil_utds,selected_soil_ctds,selected_soil_vol)
+    print("Sand Values: ",selected_sand_temp,selected_sand_utds,selected_sand_ctds,selected_sand_vol)
+    
     if(p1 <= 100):
         #bw node 1 and 2
         print("TempValue Inside P1 :", TempVal)
         dist = p1
         name='Node-1'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var12[0]) + (node_data[0] + selected_soil_temp)
-        nodeVal_utds = ((dist/100) * var12[1]) + (node_data[1] +selected_soil_ctds)
-        nodeVal_ctds = ((dist/100) * var12[2]) + (node_data[2] +selected_soil_utds)
-        nodeVal_vol  = ((dist/100) * var12[3]) + (node_data[3] + selected_soil_vol)
+        nodeVal_temp = ((dist/100) * var12[0]) + (node_data[0] + selected_soil_temp + selected_sand_temp)
+        nodeVal_utds = ((dist/100) * var12[1]) + (node_data[1] + selected_soil_ctds + selected_sand_ctds)
+        nodeVal_ctds = ((dist/100) * var12[2]) + (node_data[2] + selected_soil_utds + selected_sand_utds)
+        nodeVal_vol  = ((dist/100) * var12[3]) + (node_data[3] + selected_soil_vol + selected_sand_vol)
         # nodeVal_temp = 100
         # nodeVal_utds = TempVal
         # nodeVal_ctds = 100
@@ -390,10 +418,10 @@ async def percent(data: dict):
         dist = p2
         name='Node-2'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var23[0]) + (node_data[0] + selected_soil_temp)
-        nodeVal_utds = ((dist/100) * var23[1]) + (node_data[1] +selected_soil_ctds)
-        nodeVal_ctds = ((dist/100) * var23[2]) + (node_data[2] +selected_soil_utds)
-        nodeVal_vol  = ((dist/100) * var23[3]) + (node_data[3] + selected_soil_vol)
+        nodeVal_temp = ((dist/100) * var23[0]) + (node_data[0] + selected_soil_temp + selected_sand_temp)
+        nodeVal_utds = ((dist/100) * var23[1]) + (node_data[1] +selected_soil_ctds+ selected_sand_ctds)
+        nodeVal_ctds = ((dist/100) * var23[2]) + (node_data[2] +selected_soil_utds+ selected_sand_utds)
+        nodeVal_vol  = ((dist/100) * var23[3]) + (node_data[3] + selected_soil_vol+ selected_sand_vol)
         # nodeVal_temp = 150
         # nodeVal_utds = TempVal
         # nodeVal_ctds = 200
