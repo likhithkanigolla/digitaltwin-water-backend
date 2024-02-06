@@ -263,7 +263,7 @@ async def actuation(data: dict):
     return {"message": "Array received successfully"}
 
 @app.post("/percent")
-async def percent(data: dict):
+async def percent(data: dict, sectionNumber):
     global nodeVal_utds
     global nodeVal_ctds
     global nodeVal_temp
@@ -271,6 +271,7 @@ async def percent(data: dict):
     
     global node_data
     array = data.get("array")
+    sectionNumber = data.get("SectionNumber")
 
     if array is None or not isinstance(array, list):
         return {"error": "Invalid data format"}
@@ -284,32 +285,71 @@ async def percent(data: dict):
     var23 = [-0.324,-1093.86, 8455.5780, 8.58857]
     # var31 = 48445.578
     dist = 0
+    print(var12)
+    print("Section Number From Backend : ", sectionNumber)
+    if(sectionNumber==1):
+            TempVal=soil_payload[1]
 
     if(p1 <= 100):
         #bw node 1 and 2
         dist = p1
         name='Node-1'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var12[0]) + node_data[0]
-        nodeVal_utds = ((dist/100) * var12[1]) + node_data[1]
-        nodeVal_ctds = ((dist/100) * var12[2]) + node_data[2]
-        nodeVal_vol  = ((dist/100) * var12[3]) + node_data[3]
+        # nodeVal_temp = ((dist/100) * var12[0]) + node_data[0]
+        # nodeVal_utds = ((dist/100) * var12[1]) + node_data[1]
+        # nodeVal_ctds = ((dist/100) * var12[2]) + node_data[2]
+        # nodeVal_vol  = ((dist/100) * var12[3]) + node_data[3]
+        nodeVal_temp = 100
+        nodeVal_utds = TempVal
+        nodeVal_ctds = 100
+        nodeVal_vol = 100
+        
     else:
         #bw 2 and 3
         dist = p2
         name='Node-2'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var23[0]) + node_data[0]
-        nodeVal_utds = ((dist/100) * var23[1]) + node_data[1]
-        nodeVal_ctds = ((dist/100) * var23[2]) + node_data[2]
-        nodeVal_vol  = ((dist/100) * var23[3]) + node_data[3]
+        # nodeVal_temp = ((dist/100) * var23[0]) + node_data[0]
+        # nodeVal_utds = ((dist/100) * var23[1]) + node_data[1]
+        # nodeVal_ctds = ((dist/100) * var23[2]) + node_data[2]
+        # nodeVal_vol  = ((dist/100) * var23[3]) + node_data[3]
+        nodeVal_temp = 150
+        nodeVal_utds = TempVal
+        nodeVal_ctds = 200
+        nodeVal_vol = 300
     print("Temparature: ",nodeVal_temp," Uncompensated_TDS: ",nodeVal_utds, " Compensated_TDS:", nodeVal_ctds," Voltage_TDS:", nodeVal_vol)
+    print("SoilData:", soil_payload)
+    
     
 @app.post("/nodeVal")
 async def get_newNode():
     data = {"nodeVal_temp":nodeVal_temp, "nodeVal_utds": nodeVal_utds,"nodeVal_ctds": nodeVal_ctds,"nodeVal_vol": nodeVal_vol, "node_data": node_data}
     return JSONResponse(content=data)
 
+
+@app.post("/salt")
+async def receive_soil_container_count(payload: dict):
+    # Process the soil container count as needed
+    # Access the values using the keys in the payload dictionary
+    key = next(iter(payload))  # Get the first key in the dictionary
+    value = payload[key]
+    
+    print(f'Received Salt Container Count - {payload}')
+    
+    return {"message": "Soil Container Count received successfully"}
+
+@app.post("/soil")
+async def receive_soil_container_count(payload: dict):
+    # Process the soil container count as needed
+    # Access the values using the keys in the payload dictionary
+    key = next(iter(payload))  # Get the first key in the dictionary
+    value = payload[key]
+    global soil_payload
+    
+    print(f'Received Soil Container Count - {payload}')
+    soil_payload = payload
+    
+    return {"message": "Soil Container Count received successfully"}
 
 if __name__=='__main__':
     import uvicorn
