@@ -273,7 +273,8 @@ async def percent(data: dict):
     
     global node_data
     array = data.get("array")
-    sectionNumber = data.get("SectionNumber")
+    sectionNumber = data.get("sectionNumber")
+
 
     if array is None or not isinstance(array, list):
         return {"error": "Invalid data format"}
