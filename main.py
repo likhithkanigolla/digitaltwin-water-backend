@@ -268,6 +268,7 @@ async def percent(data: dict):
     global nodeVal_ctds
     global nodeVal_temp
     global nodeVal_vol
+    TempVal=0
     
     global node_data
     array = data.get("array")
