@@ -149,9 +149,10 @@ def update_data():
                 sensor_node1.update(
                     temperature=main_data[_node1][0],  # Assuming the temperature is at index 0
                     u_tds=main_data[_node1][1],   # Assuming the u_tds is at index 1
-                    c_tds=main_data[_node1][2],  # Assuming the total flow is at index 2
-                    v_tds=main_data[_node1][3]  # Assuming the total flow is at index 2
+                    c_tds=main_data[_node1][2],  # Assuming the compensated tds is at index 2
+                    v_tds=main_data[_node1][3]  # Assuming the voltage is at index 3
                 )
+                
             else:
                 # Handle missing or incomplete data for sensor_node1
                 sensor_node1.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
@@ -160,8 +161,8 @@ def update_data():
                 sensor_node2.update(
                     temperature=main_data[_node2][0],  # Assuming the temperature is at index 0
                     u_tds=main_data[_node2][1],   # Assuming the u_tds is at index 1
-                    c_tds=main_data[_node2][2],  # Assuming the total flow is at index 2
-                    v_tds=main_data[_node2][3]  # Assuming the total flow is at index 2
+                    c_tds=main_data[_node2][2],  # Assuming the compensated tds is at index 2
+                    v_tds=main_data[_node2][3]  # Assuming the voltage is at index 3
                 )
             else:
                 # Handle missing or incomplete data for sensor_node2
@@ -171,8 +172,8 @@ def update_data():
                 sensor_node3.update(
                     temperature=main_data[_node3][0],  # Assuming the temperature is at index 0
                     u_tds=main_data[_node3][1],   # Assuming the u_tds is at index 1
-                    c_tds=main_data[_node3][2],  # Assuming the total flow is at index 2
-                    v_tds=main_data[_node3][3]  # Assuming the total flow is at index 2
+                    c_tds=main_data[_node3][2],  # Assuming the compensated tds is at index 2
+                    v_tds=main_data[_node3][3]  # Assuming the voltage is at index 3
                 )
             else:
                 # Handle missing or incomplete data for sensor_node3
@@ -463,3 +464,4 @@ async def receive_soil_container_count(payload: dict):
 if __name__=='__main__':
     import uvicorn
     uvicorn.run(app,host="0.0.0.0",port=8080)
+    
