@@ -21,7 +21,15 @@ _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
 ack = []
-nodeVal = 0
+soil_payload = {'1':0}
+sand_payload = {'1':0}
+
+
+nodeVal_temp = 0
+nodeVal_utds = 0
+nodeVal_ctds = 0
+nodeVal_vol = 0
+
 
 
 _node1 = "Node-1"
@@ -259,8 +267,16 @@ async def actuation(data: dict):
 
 @app.post("/percent")
 async def percent(data: dict):
-    global nodeVal
+    global nodeVal_utds
+    global nodeVal_ctds
+    global nodeVal_temp
+    global nodeVal_vol
+    TempVal=0
+    
+    global node_data
     array = data.get("array")
+    sectionNumber = data.get("sectionNumber")
+
 
     if array is None or not isinstance(array, list):
         return {"error": "Invalid data format"}
@@ -270,27 +286,179 @@ async def percent(data: dict):
     p2 = array[1]
     p3 = array[2]
 
-    var12 = 11.895
-    var23 = 207.523
-    var31 = 48,445.578
+    var12 = [0.05,196.703,195.628,0.5004]
+    var23 = [-0.324,-1093.86, 8455.5780, 8.58857]
+    
+    soil1varutds= 16.134
+    soil1varctds= 183.34
+    soil1vartemp= -0.72
+    soil1varvol= 0.204
+    
+    sand1varutds= 18.332
+    sand1varctds= 333.103
+    sand1vartemp= -0.64
+    sand1varvol= 0.16
+    
+    soil2varutds= 9.175
+    soil2varctds= 204.45
+    soil2vartemp= 0.17
+    soil2varvol= 0.095
+    
+    sand2varutds= 5.758
+    sand2varctds= 10.44
+    sand2vartemp= -1.6
+    sand2varvol= 0
+    
+    soil3varutds= 2.175
+    soil3varctds= 219.70
+    soil3vartemp= -1.235
+    soil3varvol= 0.116
+    
+    sand3varutds= 0.792
+    sand3varctds= 94.442
+    sand3vartemp= 0.088
+    sand3varvol= 0.083
+    
+    soil4varutds= 13.759
+    soil4varctds= 214.99
+    soil4vartemp= -0.995
+    soil4varvol= 0.082
+    
+    sand4varutds= 2.386
+    sand4varctds= 76.846
+    sand4vartemp= 0.75
+    sand4varvol= 0.152
+     
+    # var31 = 48445.578
     dist = 0
-
+    print(var12)
+    print("Section Number From Backend : ", sectionNumber)
+    if(sectionNumber==1 or sectionNumber==3):
+            print("inside if condition")
+            TempValSoil = soil_payload[str(sectionNumber)]
+            TempValSand = sand_payload[str(sectionNumber)]
+            # print("TempValue+1:", TempVal+1)
+    elif(sectionNumber==4 or sectionNumber==6):
+            TempValSoil = soil_payload[str(sectionNumber)]
+            TempValSand = sand_payload[str(sectionNumber)]
+    
+    
+    if TempValSoil == 1:
+        selected_soil_utds = soil1varutds
+        selected_soil_ctds = soil1varctds
+        selected_soil_temp = soil1vartemp
+        selected_soil_vol = soil1varvol
+    elif TempValSoil == 2:
+        selected_soil_utds = soil2varutds
+        selected_soil_ctds = soil2varctds
+        selected_soil_temp = soil2vartemp
+        selected_soil_vol = soil2varvol 
+    elif TempValSoil == 3:
+        selected_soil_utds = soil3varutds
+        selected_soil_ctds = soil3varctds
+        selected_soil_temp = soil3vartemp
+        selected_soil_vol = soil3varvol  
+    elif TempValSoil == 4:
+        selected_soil_utds = soil4varutds
+        selected_soil_ctds = soil4varctds
+        selected_soil_temp = soil4vartemp
+        selected_soil_vol = soil4varvol
+    else:
+        selected_soil_utds = 0
+        selected_soil_ctds = 0
+        selected_soil_temp = 0
+        selected_soil_vol = 0
+        
+    if TempValSand == 1:
+        selected_sand_utds = sand1varutds
+        selected_sand_ctds = sand1varctds
+        selected_sand_temp = sand1vartemp
+        selected_sand_vol = sand1varvol
+    elif TempValSand == 2:
+        selected_sand_utds = sand2varutds
+        selected_sand_ctds = sand2varctds
+        selected_sand_temp = sand2vartemp
+        selected_sand_vol = sand2varvol 
+    elif TempValSand == 3:
+        selected_sand_utds = sand3varutds
+        selected_sand_ctds = sand3varctds
+        selected_sand_temp = sand3vartemp
+        selected_sand_vol = sand3varvol  
+    elif TempValSand == 4:
+        selected_sand_utds = sand4varutds
+        selected_sand_ctds = sand4varctds
+        selected_sand_temp = sand4vartemp
+        selected_sand_vol = sand4varvol
+    else:
+        selected_sand_utds = 0
+        selected_sand_ctds = 0
+        selected_sand_temp = 0
+        selected_sand_vol = 0
+          
+    print("Soil Values: ",selected_soil_temp,selected_soil_utds,selected_soil_ctds,selected_soil_vol)
+    print("Sand Values: ",selected_sand_temp,selected_sand_utds,selected_sand_ctds,selected_sand_vol)
+    
     if(p1 <= 100):
         #bw node 1 and 2
+        print("TempValue Inside P1 :", TempVal)
         dist = p1
-        nodeVal = ((dist/100) * var12) + 100
+        name='Node-1'
+        node_data = r_data(name)
+        nodeVal_temp = ((dist/100) * var12[0]) + (node_data[0] + selected_soil_temp + selected_sand_temp)
+        nodeVal_utds = ((dist/100) * var12[1]) + (node_data[1] + selected_soil_ctds + selected_sand_ctds)
+        nodeVal_ctds = ((dist/100) * var12[2]) + (node_data[2] + selected_soil_utds + selected_sand_utds)
+        nodeVal_vol  = ((dist/100) * var12[3]) + (node_data[3] + selected_soil_vol + selected_sand_vol)
+        # nodeVal_temp = 100
+        # nodeVal_utds = TempVal
+        # nodeVal_ctds = 100
+        # nodeVal_vol = 100
+        
     else:
         #bw 2 and 3
         dist = p2
-        nodeVal = (dist/100 * var23) + 100
-
-    print(nodeVal)
+        name='Node-2'
+        node_data = r_data(name)
+        nodeVal_temp = ((dist/100) * var23[0]) + (node_data[0] + selected_soil_temp + selected_sand_temp)
+        nodeVal_utds = ((dist/100) * var23[1]) + (node_data[1] +selected_soil_ctds+ selected_sand_ctds)
+        nodeVal_ctds = ((dist/100) * var23[2]) + (node_data[2] +selected_soil_utds+ selected_sand_utds)
+        nodeVal_vol  = ((dist/100) * var23[3]) + (node_data[3] + selected_soil_vol+ selected_sand_vol)
+        # nodeVal_temp = 150
+        # nodeVal_utds = TempVal
+        # nodeVal_ctds = 200
+        # nodeVal_vol = 300
+    print("Temparature: ",nodeVal_temp," Uncompensated_TDS: ",nodeVal_utds, " Compensated_TDS:", nodeVal_ctds," Voltage_TDS:", nodeVal_vol)
+    print("SoilData:", soil_payload)
+    
     
 @app.post("/nodeVal")
 async def get_newNode():
-    data = {"nodeVal": nodeVal}
+    data = {"nodeVal_temp":nodeVal_temp, "nodeVal_utds": nodeVal_utds,"nodeVal_ctds": nodeVal_ctds,"nodeVal_vol": nodeVal_vol, "node_data": node_data}
     return JSONResponse(content=data)
 
+
+@app.post("/sand")
+async def receive_soil_container_count(payload: dict):
+    # Process the soil container count as needed
+    # Access the values using the keys in the payload dictionary
+    key = next(iter(payload))  # Get the first key in the dictionary
+    value = payload[key]
+    
+    print(f'Received sand Container Count - {payload}')
+    sand_payload[key] = value
+    
+    return {"message": "Soil Container Count received successfully"}
+
+@app.post("/soil")
+async def receive_soil_container_count(payload: dict):
+    # Process the soil container count as needed
+    # Access the values using the keys in the payload dictionary
+    key = next(iter(payload))  # Get the first key in the dictionary
+    value = payload[key]
+    
+    print(f'Received Soil Container Count - {payload}')
+    soil_payload[key] = value
+    
+    return {"message": "Soil Container Count received successfully"}
 
 if __name__=='__main__':
     import uvicorn
