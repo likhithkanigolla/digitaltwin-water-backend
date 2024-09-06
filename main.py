@@ -15,9 +15,9 @@ from fastapi.responses import JSONResponse
 
 import re
 
-# _url= "http://onem2m.iiit.ac.in:443/~/in-cse/in-name/"
+_url= "http://dev-onem2m.iiit.ac.in:443/~/in-cse/in-name/"
 # _url= "http://localhost:2000/~/in-cse/in-name/"
-_url= "http://10.3.1.117:8200/~/in-cse/in-name/"
+# _url= "http://10.3.1.117:8200/~/in-cse/in-name/"
 
 _ae = "AE-DT/"
 ack = []
@@ -44,7 +44,7 @@ main_desc = {}
 
 payload = ""
 headers = {
-  "X-M2M-Origin": "admin:admin",
+  "X-M2M-Origin": "dev_guest:dev_guest",
   "Content-Type": "application/json"
   }
 
@@ -98,15 +98,16 @@ def desc_parser(xml_data):
 
 def get_desc(name):
     _URL = _url + _ae + name + _desc 
+    print("URL:",_URL)
     response = requests.request("GET",_URL,headers=headers,data=payload)
     data = json.loads(response.text)
     # data = desc_parser(data["m2m:cin"]["con"])
    
-    print("Descriptor Data:")
-    data = data["m2m:cin"]["con"]
-    print(data)
+    print("Descriptor Data:", data)
+    data_par = data["m2m:cin"]["con"]
+    print("Pasrsed Data", data_par)
     # data = data
-    match = re.search(r'Node Location: \[([\d., -]+)\]', data)
+    match = re.search(r'Node Location: \[([\d., -]+)\]', data_par)
     if match:
         node_location = [float(coord) for coord in match.group(1).split(',')]
         print("Node Location:", node_location)
@@ -121,15 +122,25 @@ def get_desc(name):
     main_desc[name] = data
 
 def get_data(name):
+    print("Get Data")
     _URL = _url + _ae + name + "/Data/la"
     response = requests.request("GET",_URL,headers=headers,data=payload)
     data = json.loads(response.text)
     # data = eval(data["m2m:cin"]["con"])[1:]
     data = eval(data["m2m:cin"]["con"])
     print("Sensor Data:")
+    print("_URL")
     print(data)
-    # data = data
-    main_data[name] = data
+    # Map the data to the desired format
+    mapped_data = {
+        "Temperature": data[0],
+        "Uncompensated_TDS": data[1],
+        "Compensated_TDS": data[2],
+        "Voltage_TDS": data[3]
+    }
+    
+    main_data[name] = mapped_data  # Store the mapped data
+    print(main_data)
 
 
 
@@ -139,7 +150,7 @@ def update_data():
             get_desc(_node1)
             get_desc(_node2)
             get_desc(_node3)
-            
+            print("Data Containers")
             get_data(_node1)
             get_data(_node2)
             get_data(_node3)
@@ -178,9 +189,10 @@ def update_data():
                 # Handle missing or incomplete data for sensor_node3
                 sensor_node3.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
 
-            time.sleep(20)
+            # time.sleep(60)
         except Exception as e:
             print(f"Error in update_data: {e}")
+        time.sleep(10)
 
 
 def get_ack(name):

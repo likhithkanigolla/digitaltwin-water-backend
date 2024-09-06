@@ -1,0 +1,22 @@
+{
+    "nodes":{
+        "Node-1":{
+            "Temperature":null,
+            "Uncompensated_TDS":null,
+            "Compensated_TDS":null,
+            "Voltage_TDS":null
+        },
+        "Node-2":{
+            "Temperature":null,
+            "Uncompensated_TDS":null,
+            "Compensated_TDS":null,
+            "Voltage_TDS":null
+        },
+        "Node-3":{
+            "Temperature":null,
+            "Uncompensated_TDS":null,
+            "Compensated_TDS":null,
+            "Voltage_TDS":null
+        }
+    }
+}
