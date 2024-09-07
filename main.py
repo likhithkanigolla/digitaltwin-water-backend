@@ -56,11 +56,6 @@ sensor_node1 = WaterFlowSensorDigitalTwin(node_id= _node1)
 sensor_node2 = WaterFlowSensorDigitalTwin(node_id= _node2)
 sensor_node3 = WaterFlowSensorDigitalTwin(node_id= _node3)
 
-print("Printing Sensor Node Details")
-print(sensor_node1)
-print(sensor_node2)
-print(sensor_node3)
-
 def desc_parser(xml_data):
     # Parse the XML-like data
     root = ET.fromstring(xml_data)
@@ -82,13 +77,11 @@ def desc_parser(xml_data):
             
             selected_data[name] = val
 
-            print("------------------------------------Val = ", val)
 
         elif name == "Data String Parameters":
             # Parse the Data String Parameters value as a list and exclude "timestamp"
             parameters_list = eval(val)  # Note: Be cautious when using eval in production code
             filtered_parameters = [param for param in parameters_list if param != "timestamp"]
-            print(filtered_parameters)
             selected_data[name] = filtered_parameters
     
     # Convert the selected data dictionary to JSON format
@@ -98,19 +91,15 @@ def desc_parser(xml_data):
 
 def get_desc(name):
     _URL = _url + _ae + name + _desc 
-    print("URL:",_URL)
     response = requests.request("GET",_URL,headers=headers,data=payload)
     data = json.loads(response.text)
     # data = desc_parser(data["m2m:cin"]["con"])
-   
-    print("Descriptor Data:", data)
+
     data_par = data["m2m:cin"]["con"]
-    print("Pasrsed Data", data_par)
     # data = data
     match = re.search(r'Node Location: \[([\d., -]+)\]', data_par)
     if match:
         node_location = [float(coord) for coord in match.group(1).split(',')]
-        print("Node Location:", node_location)
     else:
         print("Node location not found in the input string.")
     
@@ -118,19 +107,14 @@ def get_desc(name):
     val = {}
     val["Latitude"] = node_location[0]
     val["Longitude"] = node_location[1]
-    print("val = ", val)
     main_desc[name] = data
 
 def get_data(name):
-    print("Get Data")
     _URL = _url + _ae + name + "/Data/la"
     response = requests.request("GET",_URL,headers=headers,data=payload)
     data = json.loads(response.text)
     # data = eval(data["m2m:cin"]["con"])[1:]
     data = eval(data["m2m:cin"]["con"])
-    print("Sensor Data:")
-    print("_URL")
-    print(data)
     # Map the data to the desired format
     mapped_data = {
         "Temperature": data[0],
@@ -140,7 +124,6 @@ def get_data(name):
     }
     
     main_data[name] = mapped_data  # Store the mapped data
-    print(main_data)
 
 
 
@@ -150,7 +133,7 @@ def update_data():
             get_desc(_node1)
             get_desc(_node2)
             get_desc(_node3)
-            print("Data Containers")
+
             get_data(_node1)
             get_data(_node2)
             get_data(_node3)
@@ -201,10 +184,7 @@ def get_ack(name):
     _URL = _url + _ae + name + _ack 
     response = requests.request("GET",_URL,headers=headers,data=payload)
     ack = json.loads(response.text)
-    
-    print("Acknowledgment Data:")
     ack = ack["m2m:cin"]["con"]
-    print(ack)
 
     # main_desc[name] = ack
 
@@ -225,7 +205,6 @@ def post_to_onem2m(data):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-
     print(response.text)
         
 thread_data = threading.Thread(target=update_data)
@@ -255,12 +234,10 @@ async def get_acknowledgment():
 
 @app.get('/desc/{name}')
 def r_desc(name):
-    print(name)
     return main_desc[name]
 
 @app.get('/data/{name}')
 def r_data(name):
-    print("Node Name:",name)
     return main_data[name]
 
 
