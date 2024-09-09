@@ -124,60 +124,76 @@ def get_data(name):
     }
     
     main_data[name] = mapped_data  # Store the mapped data
+    print(main_data)
+    
 
 
 
 def update_data():
     while True:
         try:
+            # Fetch descriptions for nodes
             get_desc(_node1)
             get_desc(_node2)
             get_desc(_node3)
 
+            # Fetch data for nodes
             get_data(_node1)
             get_data(_node2)
             get_data(_node3)
 
-            # Update the digital twins with sensor data
-            if _node1 in main_data and len(main_data[_node1]) > 2:
+            # Ensure node keys exist and are valid in main_data
+            nodes = [_node1, _node2, _node3]
+            for node in nodes:
+                if node not in main_data:
+                    
+                    continue  # Skip to the next node if the current node is missing
+
+            # Check and update sensor data for _node1 using dictionary keys
+            if _node1 in main_data and isinstance(main_data[_node1], dict):
                 sensor_node1.update(
-                    temperature=main_data[_node1][0],  # Assuming the temperature is at index 0
-                    u_tds=main_data[_node1][1],   # Assuming the u_tds is at index 1
-                    c_tds=main_data[_node1][2],  # Assuming the total flow is at index 2
-                    v_tds=main_data[_node1][3]  # Assuming the total flow is at index 2
+                    temperature=main_data[_node1].get('Temperature'),
+                    u_tds=main_data[_node1].get('Uncompensated_TDS'),
+                    c_tds=main_data[_node1].get('Compensated_TDS'),
+                    v_tds=main_data[_node1].get('Voltage_TDS')
                 )
             else:
-                # Handle missing or incomplete data for sensor_node1
+                
                 sensor_node1.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
 
-            if _node2 in main_data and len(main_data[_node2]) > 2:
+            # Check and update sensor data for _node2 using dictionary keys
+            if _node2 in main_data and isinstance(main_data[_node2], dict):
                 sensor_node2.update(
-                    temperature=main_data[_node2][0],  # Assuming the temperature is at index 0
-                    u_tds=main_data[_node2][1],   # Assuming the u_tds is at index 1
-                    c_tds=main_data[_node2][2],  # Assuming the total flow is at index 2
-                    v_tds=main_data[_node2][3]  # Assuming the total flow is at index 2
+                    temperature=main_data[_node2].get('Temperature'),
+                    u_tds=main_data[_node2].get('Uncompensated_TDS'),
+                    c_tds=main_data[_node2].get('Compensated_TDS'),
+                    v_tds=main_data[_node2].get('Voltage_TDS')
                 )
             else:
-                # Handle missing or incomplete data for sensor_node2
+               
                 sensor_node2.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
-                
-            if _node3 in main_data and len(main_data[_node3]) > 2:
+
+            # Check and update sensor data for _node3 using dictionary keys
+            if _node3 in main_data and isinstance(main_data[_node3], dict):
                 sensor_node3.update(
-                    temperature=main_data[_node3][0],  # Assuming the temperature is at index 0
-                    u_tds=main_data[_node3][1],   # Assuming the u_tds is at index 1
-                    c_tds=main_data[_node3][2],  # Assuming the total flow is at index 2
-                    v_tds=main_data[_node3][3]  # Assuming the total flow is at index 2
+                    temperature=main_data[_node3].get('Temperature'),
+                    u_tds=main_data[_node3].get('Uncompensated_TDS'),
+                    c_tds=main_data[_node3].get('Compensated_TDS'),
+                    v_tds=main_data[_node3].get('Voltage_TDS')
                 )
             else:
-                # Handle missing or incomplete data for sensor_node3
+               
                 sensor_node3.update(temperature=None, u_tds=None, c_tds=None, v_tds=None)
 
-            # time.sleep(60)
+        except KeyError as ke:
+            print(f"KeyError in update_data: {ke}. Ensure that the node keys exist in 'main_data' and are properly initialized.")
+        except IndexError as ie:
+            print(f"IndexError in update_data: {ie}. Check if there are enough values in 'main_data' lists.")
         except Exception as e:
             print(f"Error in update_data: {e}")
+        
+        # Delay between updates
         time.sleep(10)
-
-
 def get_ack(name):
 
 
@@ -205,7 +221,7 @@ def post_to_onem2m(data):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    print(response.text)
+    # print(response.text)
         
 thread_data = threading.Thread(target=update_data)
 thread_data.daemon = True
@@ -320,7 +336,7 @@ async def percent(data: dict):
      
     # var31 = 48445.578
     dist = 0
-    print(var12)
+    
     print("Section Number From Backend : ", sectionNumber)
     if(sectionNumber==1 or sectionNumber==3):
             print("inside if condition")
