@@ -339,13 +339,17 @@ async def percent(data: dict):
     
     print("Section Number From Backend : ", sectionNumber)
     if(sectionNumber==1 or sectionNumber==3):
-            print("inside if condition")
+            print("inside if condition 1 0r 3")
+            print("Soil Payload:", soil_payload)
             TempValSoil = soil_payload[str(sectionNumber)]
             TempValSand = sand_payload[str(sectionNumber)]
+            print("TempValSoil:", TempValSoil, "TempValSand:", TempValSand)
             # print("TempValue+1:", TempVal+1)
     elif(sectionNumber==4 or sectionNumber==6):
+            print("inside if condition 4 0r 6")
             TempValSoil = soil_payload[str(sectionNumber)]
             TempValSand = sand_payload[str(sectionNumber)]
+            print("TempValSoil:", TempValSoil, "TempValSand:", TempValSand)
     
     
     if TempValSoil == 1:
@@ -409,29 +413,33 @@ async def percent(data: dict):
         dist = p1
         name='Node-1'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var12[0]) + (node_data[0] + selected_soil_temp + selected_sand_temp)
-        nodeVal_utds = ((dist/100) * var12[1]) + (node_data[1] + selected_soil_ctds + selected_sand_ctds)
-        nodeVal_ctds = ((dist/100) * var12[2]) + (node_data[2] + selected_soil_utds + selected_sand_utds)
-        nodeVal_vol  = ((dist/100) * var12[3]) + (node_data[3] + selected_soil_vol + selected_sand_vol)
+        print("Node Data: ", node_data)
+        nodeVal_temp = ((dist/100) * var12[0]) + (node_data['Temperature'] + selected_soil_temp + selected_sand_temp)
+        nodeVal_utds = ((dist/100) * var12[1]) + (node_data['Uncompensated_TDS'] + selected_soil_ctds + selected_sand_ctds)
+        nodeVal_ctds = ((dist/100) * var12[2]) + (node_data['Compensated_TDS'] + selected_soil_utds + selected_sand_utds)
+        nodeVal_vol  = ((dist/100) * var12[3]) + (node_data['Voltage_TDS'] + selected_soil_vol + selected_sand_vol)
         # nodeVal_temp = 100
         # nodeVal_utds = TempVal
         # nodeVal_ctds = 100
         # nodeVal_vol = 100
         
     else:
-        #bw 2 and 3
+        # Between node 2 and node 3
         dist = p2
-        name='Node-2'
+        name = 'Node-2'
         node_data = r_data(name)
-        nodeVal_temp = ((dist/100) * var23[0]) + (node_data[0] + selected_soil_temp + selected_sand_temp)
-        nodeVal_utds = ((dist/100) * var23[1]) + (node_data[1] +selected_soil_ctds+ selected_sand_ctds)
-        nodeVal_ctds = ((dist/100) * var23[2]) + (node_data[2] +selected_soil_utds+ selected_sand_utds)
-        nodeVal_vol  = ((dist/100) * var23[3]) + (node_data[3] + selected_soil_vol+ selected_sand_vol)
-        # nodeVal_temp = 150
-        # nodeVal_utds = TempVal
-        # nodeVal_ctds = 200
-        # nodeVal_vol = 300
-    print("Temparature: ",nodeVal_temp," Uncompensated_TDS: ",nodeVal_utds, " Compensated_TDS:", nodeVal_ctds," Voltage_TDS:", nodeVal_vol)
+        print("Node Data: ", node_data)
+
+        try:
+            nodeVal_temp = ((dist / 100) * var23[0]) + (node_data['Temperature'] + selected_soil_temp + selected_sand_temp)
+            nodeVal_utds = ((dist / 100) * var23[1]) + (node_data['Uncompensated_TDS'] + selected_soil_ctds + selected_sand_ctds)
+            nodeVal_ctds = ((dist / 100) * var23[2]) + (node_data['Compensated_TDS'] + selected_soil_utds + selected_sand_utds)
+            nodeVal_vol = ((dist / 100) * var23[3]) + (node_data['Voltage_TDS'] + selected_soil_vol + selected_sand_vol)
+        except KeyError as ke:
+            print(f"KeyError: {ke}")
+            return {"error": "Invalid node data"}
+
+    print("Temperature: ", nodeVal_temp, " Uncompensated_TDS: ", nodeVal_utds, " Compensated_TDS:", nodeVal_ctds, " Voltage_TDS:", nodeVal_vol)
     print("SoilData:", soil_payload)
     
     
