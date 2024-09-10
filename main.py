@@ -190,7 +190,7 @@ def get_ack(name):
 
 
 def post_to_onem2m(data):
-    url = "http://10.3.1.117:8200/~/in-cse/in-name/AE-DT/Node-1/Actuation"
+    url = "http://dev-onem2m.iiit.ac.in:443/~/in-cse/in-name/AE-DT/Actuation"
     
     data = str(data)
     data_json = json.dumps(data)
@@ -451,4 +451,4 @@ async def receive_soil_container_count(payload: dict):
 
 if __name__=='__main__':
     import uvicorn
-    uvicorn.run(app,host="0.0.0.0",port=8080)
+    uvicorn.run(app,host="0.0.0.0",port=7890)
